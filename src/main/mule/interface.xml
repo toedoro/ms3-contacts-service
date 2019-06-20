@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <apikit:config name="contacts-api-config" raml="contacts-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="contacts-api-main">
+        <http:listener config-ref="HTTP_Listener_config" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="contacts-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="contacts-api-console">
+        <http:listener config-ref="HTTP_Listener_config" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="contacts-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="delete:\contacts\(contactId)\addresses\(addressId):contacts-api-config">
+		<flow-ref doc:name="Delete Address From Contact" doc:id="4f6d2975-351f-466d-bc32-e9bdc473f638" name="deleteAddressFromContract"/>
+    </flow>
+    <flow name="delete:\contacts\(contactId)\communications\(communicationId):contacts-api-config">
+		<flow-ref doc:name="Delete Communication From Contact" doc:id="d7d19cd5-5b8c-40c7-9bc7-422836e39630" name="deleteCommunicationFromContact"/>
+    </flow>
+    <flow name="delete:\contacts\(contactId):contacts-api-config">
+        <flow-ref doc:name="Delete Contact By Id" doc:id="af810094-96d3-4e97-a19d-c00ace3c6e2e" name="deleteContactById"/>
+    </flow>
+    <flow name="patch:\contacts\(contactId)\addresses\(addressId):contacts-api-config">
+		<flow-ref doc:name="Patch Address From Contact" doc:id="23bc00d5-251d-4a9b-9878-ed4968341e1a" name="patchAddressFromContact"/>
+    </flow>
+    <flow name="patch:\contacts\(contactId)\communications\(communicationId):contacts-api-config">
+		<flow-ref doc:name="Patch Communication From Contact" doc:id="ee682dba-b6e2-41f0-b3cf-49ec36a9bf7a" name="patchCommunicationFromContact"/>
+    </flow>
+    <flow name="patch:\contacts\(contactId):contacts-api-config">
+        <flow-ref doc:name="Patch Contacts By Id" doc:id="f8a6ea3c-6263-452b-8ebd-5d15c773d48c" name="patchContactsById"/>
+    </flow>
+    <flow name="get:\contacts\(contactId)\addresses:contacts-api-config">
+		<flow-ref doc:name="Get Addresses From Contact" doc:id="16773a2a-f826-491a-a39c-e8bfb0394ebd" name="getAddressesFromContact"/>
+    </flow>
+    <flow name="get:\contacts\(contactId)\communications:contacts-api-config">
+        <flow-ref doc:name="Get Communications From Contact" doc:id="2bfb0f4d-a2ce-4201-bd61-e972898b7899" name="getCommunicationsFromContract"/>
+    </flow>
+    <flow name="get:\contacts:contacts-api-config">
+		<flow-ref doc:name="Get Contacts" doc:id="d8bc4d7a-bbaa-4456-93cc-3ec73b1d8460" name="getContacts"/>
+    </flow>
+    <flow name="get:\contacts\(contactId)\addresses\(addressId):contacts-api-config">
+		<flow-ref doc:name="Get Address From Contact" doc:id="902176fa-113c-47ca-8f86-e3fe4ca1d5d4" name="getAddressFromContact"/>
+    </flow>
+    <flow name="get:\contacts\(contactId)\communications\(communicationId):contacts-api-config">
+		<flow-ref doc:name="Get Communication From Contact" doc:id="2124f865-8848-4c02-a860-05876966370e" name="getCommunicationFromContact"/>
+    </flow>
+    <flow name="get:\contacts\(contactId):contacts-api-config">
+		<flow-ref doc:name="Get Contacts By Id" doc:id="22918f59-b9f7-4039-8a40-37ce04802e21" name="getContactsById"/>
+    </flow>
+    <flow name="post:\contacts\(contactId)\addresses:application\json:contacts-api-config">
+        <flow-ref doc:name="Post Address From Contact" doc:id="8ce2fc90-fb2e-477c-ba84-0e0ed5e1eb05" name="postAddressFromContact"/>
+    </flow>
+    <flow name="post:\contacts\(contactId)\communications:application\json:contacts-api-config">
+        <flow-ref doc:name="Post Communication From Contact" doc:id="817d043d-b9d4-4bcf-9eab-3229b4be6938" name="postCommunicationFromContact"/>
+    </flow>
+    <flow name="post:\contacts:application\json:contacts-api-config">
+		<flow-ref doc:name="Post Contacts" doc:id="81a4b526-ef0f-4b07-a3ef-910787df991c" name="postContacts"/>
+    </flow>
+</mule>

@@ -1,0 +1,191 @@
+#%RAML 1.0
+title: Contacts API
+
+types: 
+  AddressType: !include datatypes/addressType.raml
+  CommunicationType: !include datatypes/communicationType.raml
+  IdentificationType: !include datatypes/identificationType.raml
+
+/contacts:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: IdentificationType[]
+            example: !include examples/identificationsExample.raml
+  post:
+    body: 
+      application/json:
+        type: IdentificationType
+        example: !include examples/identificationNoIdExample.raml
+    responses: 
+      201:
+        body: 
+          application/json:
+            example:
+              message: Identification successfully added!
+      400:
+        body:
+          application/json:
+            example: 
+              message: Error saving data from the Contacts
+
+  /{contactId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: IdentificationType
+              example: !include examples/identificationExample.raml
+
+    patch:
+      body: 
+        application/json:
+          type: IdentificationType
+          example: !include examples/identificationNoIdExample.raml
+      responses: 
+        204:
+          body: 
+            application/json:
+              example:
+                message: Contacts successfully updated!
+        400:
+          body:
+            application/json:
+              example: 
+                message: Error updating data from the Contacts
+      
+    delete:
+      responses: 
+        204:
+          body: 
+            application/json:
+              example:
+                message: Contacts successfully deleted!
+      
+    /addresses:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: AddressType[]
+                example: !include examples/addressesExample.raml
+
+      post:
+        body: 
+          application/json:
+            type: AddressType
+            example: !include examples/addressNoIdExample.raml
+        responses: 
+          201:
+            body: 
+              application/json:
+                example:
+                  message: Address successfully added!
+          400:
+            body:
+              application/json:
+                example: 
+                  message: Error saving data from the Address
+
+
+      /{addressId}:
+        get:
+          responses:
+            200:
+              body:
+                application/json:
+                  type: AddressType
+                  example: !include examples/addressExample.raml
+        patch:
+          body: 
+            application/json:
+              type: AddressType
+              example: !include examples/addressNoIdExample.raml
+          responses: 
+            204:
+              body: 
+                application/json:
+                  example:
+                    message: Address successfully updated!
+            400:
+              body:
+                application/json:
+                  example: 
+                    message: Error updating data from the Address
+
+        delete:
+          responses: 
+            204:
+              body: 
+                application/json:
+                  example:
+                    message: Address successfully deleted!
+          
+    /communications:
+      get:
+        responses:
+            200:
+              body:
+                application/json:
+                  type: CommunicationType[]
+                  example: !include examples/communicationsExample.raml
+
+      post:
+        body: 
+          application/json:
+            type: CommunicationType
+            example: !include examples/communicationNoIdExample.raml
+        responses: 
+          201:
+            body: 
+              application/json:
+                example:
+                  message: Communication successfully added!
+          400:
+            body:
+              application/json:
+                example: 
+                  message: Error saving data from the Communication
+
+      /{communicationId}:
+        get:
+          responses:
+              200:
+                body:
+                  application/json:
+                    type: CommunicationType
+                    example: !include examples/communicationExample.raml
+
+        patch:
+          body: 
+            application/json:
+              type: CommunicationType
+              example: !include examples/communicationNoIdExample.raml
+          responses: 
+            204:
+              body: 
+                application/json:
+                  example:
+                    message: Communication successfully updated!
+            400:
+              body:
+                application/json:
+                  example: 
+                    message: Error updating data from the Communication
+
+        delete:
+          responses: 
+            204:
+              body: 
+                application/json:
+                  example:
+                    message: Communication successfully deleted!
+          
+    
+      
+   
+    

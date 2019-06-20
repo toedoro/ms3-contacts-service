@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="getAddressesFromContact" doc:id="c64dd4e6-611d-421b-b0e9-809507ec8141" >
+		<flow-ref doc:name="Set Contact Id" doc:id="20e3b32a-c916-46b1-84ff-fda501667764" name="setContactId"/>
+		<db:select doc:name="Get Addresses From Contact" doc:id="90021977-db56-418b-ae7d-0b72e7f9e9e1" config-ref="Database_Config">
+			<db:sql >SELECT * FROM address
+WHERE identification_id = :identificationId</db:sql>
+			<db:input-parameters ><![CDATA[#[{'identificationId': vars.contactId}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="54238408-ecd3-4c3e-9f12-75de05bf16fd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postAddressFromContact" doc:id="5b98dcd1-a5b6-4be9-ac50-79281b6f4799" >
+		<flow-ref doc:name="Set Contact Id" doc:id="8a9f94f8-d957-45d1-a350-7b3a9e84e153" name="setContactId"/>
+		<db:insert doc:name="Insert Address From Contact" doc:id="6ebe1e6b-7d7b-4262-9176-adf1091773bd" config-ref="Database_Config">
+			<db:sql >INSERT INTO address
+(type, number, street, unit, city, state, zipcode, identification_id)
+VALUES
+(:type, :number, :street, :unit, :city, :state, :zipcode, :identificationId)</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'type': payload.'type', 'number': payload.number,
+	'street': payload.street, 'unit': payload.unit,
+	'city': payload.city, 'state': payload.state,
+	'zipcode': payload.zipcode, 'identificationId': vars.contactId	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="b76fe9af-83ca-42da-bd51-d982228ef159" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Address Successfully added!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAddressFromContact" doc:id="a3ed20e0-9f9e-4151-9fc5-f4cad76ccdb0" >
+		<flow-ref doc:name="Set Contact Id" doc:id="7276449e-5fe7-4a5f-9a52-20bebe95fa75" name="setContactId"/>
+		<flow-ref doc:name="Set Address Id" doc:id="9a8bf75a-b5e3-4b44-8483-f0de097ebd5a" name="setAddressId"/>
+		<db:select doc:name="Select Address From Contact" doc:id="192b0f47-1be3-42f9-ad7c-da764df2cd73" config-ref="Database_Config">
+			<db:sql >SELECT * FROM address
+WHERE id = :id
+	AND identification_id = :identificationId</db:sql>
+			<db:input-parameters ><![CDATA[#[{'id': vars.addressId, 'identificationId': vars.contactId}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="413a19a7-52c3-4b71-a0dc-3c06affa4e0d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="patchAddressFromContact" doc:id="04580ac4-6cb9-4c3a-a7f9-1599bd2614c0" >
+		<flow-ref doc:name="Set Contact Id" doc:id="7b86ec36-a487-44dd-b5a2-7b489a3b9ac6" name="setContactId"/>
+		<flow-ref doc:name="Set Address Id" doc:id="53cce325-267c-467a-baa8-ff405d87358e" name="setAddressId"/>
+		<db:update doc:name="Update Address From Contact" doc:id="9217829e-dc61-4e52-b8e1-db043f84d7e6" config-ref="Database_Config">
+			<db:sql >UPDATE address
+SET type=:type, number=:number, street=:street, 
+		 unit=:unit, city=:city, state=:state, zipcode=:zipcode
+WHERE id = :id
+	AND identification_id = :identificationId</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'type': payload.'type', 'number': payload.number,
+	'street': payload.street, 'unit': payload.unit,
+	'city': payload.city, 'state': payload.state, 'zipcode': payload.zipcode, 
+	'id': vars.addressId, 'identificationId': vars.contactId	
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="49214a4d-0cad-4824-b730-8f9a50458dbf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Address Successfully updated!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="deleteAddressFromContract" doc:id="5e73f2e9-ab1f-4185-bf92-dde576acc10f" >
+		<flow-ref doc:name="Set Contact Id" doc:id="63b14218-e078-432f-9d1f-5011044c5735" name="setContactId"/>
+		<flow-ref doc:name="Set Address Id" doc:id="08661b66-4572-4e4e-8599-f44a11a6b83e" name="setAddressId"/>
+		<db:delete doc:name="Delete Address From Contract" doc:id="11985453-d807-4802-a9bb-0b84208e7d22" config-ref="Database_Config">
+			<db:sql >DELETE FROM address
+WHERE id = :id
+	AND identification_id = :identificationId</db:sql>
+			<db:input-parameters ><![CDATA[#[{'id': vars.addressId, 'identificationId': vars.contactId}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="cd3bfc0a-171e-45af-a6a5-432623bbefae" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Address Successfully deleted!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+</mule>

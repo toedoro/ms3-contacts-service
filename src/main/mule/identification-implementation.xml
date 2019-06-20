@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getContacts" doc:id="1ccd26a2-65f7-442a-aabd-8f31ce659205" >
+		<flow-ref doc:name="Get All Contacts" doc:id="7af7277d-c38f-4bb4-8ef8-832cfdae1473" name="getAllContacts" />
+		<ee:transform doc:name="Transform Message" doc:id="16aee4b8-bd1a-4b58-ae6d-b3b57ff58481" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllContacts" doc:id="568322bf-fd28-4e2c-96d1-5fce0a30349d" >
+		<db:select doc:id="add642a4-385c-4c44-9fba-12fdf40a4256" config-ref="Database_Config" doc:name="Get Contacts">
+			<db:sql>SELECT * FROM identification</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="2b87744c-913a-4076-8dfc-15a8e0b2df79">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postContacts" doc:id="dadd7d1e-16f4-48ca-ae39-2921dfbf848c" >
+		<db:insert doc:name="Insert Contacts" doc:id="90166574-60bf-411c-bb13-5759e24797f7" config-ref="Database_Config">
+			<db:sql >INSERT INTO identification
+	(firstName, lastName, dob, gender, title)
+VALUES
+	(:firstName, :lastName, :dob, :gender, :title)</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'firstName': payload.firstName, 'lastName': payload.lastName,
+	'dob': payload.dob, 'gender': payload.gender, 'title': payload.title
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="108b9fb2-65ea-467a-bb4f-a717ae54a7d3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Contact successfully added!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getContactsById" doc:id="24411f1c-53b5-4199-bc64-df6628554945" >
+		<flow-ref doc:name="Set Contact Id" doc:id="07bce48a-8119-48a9-8fd8-ff13b02a5dc2" name="setContactId"/>
+		<db:select doc:name="Get Contacts By Id" doc:id="601031ed-fcea-41c4-83ab-3efd3c6ae3c4" config-ref="Database_Config">
+			<db:sql >SELECT * FROM identification
+WHERE id = :id</db:sql>
+			<db:input-parameters ><![CDATA[#[{'id' : vars.contactId}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="b7b0f3f4-19ef-409d-b009-f23a9e3cd4fc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="a48e7d9c-2c1c-40b5-9f0a-6a639262ca70" message="#[payload]"/>
+	</flow>
+	<flow name="patchContactsById" doc:id="5f426164-c7cf-4a0a-a2a2-dd6a10044bfc" >
+		<flow-ref doc:name="Set Contact Id" doc:id="fd839cdb-cae7-426c-9d4d-c9c36cdf62fc" name="setContactId"/>
+		<db:update doc:name="Update Contacts by id" doc:id="dd40858b-d223-4da9-95ea-0a04549909e9" config-ref="Database_Config">
+			<db:sql >UPDATE identification
+SET firstName=:firstName, lastName=:lastName, dob=:dob, gender=:gender, title=:title 
+WHERE id=:id</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'firstName': payload.firstName, 'lastName': payload.lastName,
+	'dob': payload.dob, 'gender': payload.gender, 'title': payload.title,
+	'id': vars.contactId
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="7471767c-8ee7-4b77-829e-28fb836598f9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Contact successfully updated!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="deleteContactById" doc:id="25895986-1408-40e2-bf23-0f6926f2619e" >
+		<flow-ref doc:name="Set Contact Id" doc:id="58e4ff96-31a1-4608-898d-9e2a8315faf5" name="setContactId"/>
+		<db:delete doc:name="Delete Contacts By Id" doc:id="fd94e297-f89e-4658-b6aa-265c7ae2b6d7" config-ref="Database_Config">
+			<db:sql >DELETE FROM identification
+WHERE id = :id</db:sql>
+			<db:input-parameters ><![CDATA[#[{'id': vars.contactId}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="86b177c9-ee56-4ad6-a71f-36ab01ed7888" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Contact successfully deleted!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+
+</mule>
