@@ -16,33 +16,50 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<set-variable value="#[[]]" doc:name="Set Contacts" doc:id="0d6f7ab5-5994-4e6d-8f96-fd3202f953f1" variableName="contacts"/>
+		<ee:transform doc:name="init contacts" doc:id="ba999433-8b3f-464d-813b-dcbd6d926e4e" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="contacts" ><![CDATA[%dw 2.0
+output application/java
+---
+[]]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 		<foreach doc:name="For Each" doc:id="631a40f1-1108-45cb-aca2-6366c0d5632f" collection="payload">
 			<set-variable value="#[payload]" doc:name="Set Variable" doc:id="69978d9d-b1b5-4bce-ab1c-ebe1c6000c0d" variableName="identification"/>
 			<flow-ref doc:name="Get Addresses And Communications From Contact" doc:id="0badac03-c2c0-41d2-a412-9dc44bb3bf84" name="getAddressessAndCommunicationsFromContact"/>
 			<ee:transform doc:name="Transform Message" doc:id="80493c2f-8444-4379-ae1f-9ffd7ebc6c58" >
 				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="contact" ><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	"identification": vars.identification,
 	"address": vars.addresses,
 	"communications": vars.communications
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables >
+}]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
-			<set-variable value="#[payload]" doc:name="Set Contacts" doc:id="9cb5b568-834c-493c-8759-2d29dd36c5fd" variableName="contacts"/>
+			<ee:transform doc:name="Transform Message" doc:id="40cc637f-6254-4d56-ad2b-f64201b01233">
+				<ee:message>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="contacts" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.contacts + vars.contact]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
 		</foreach>
-		<logger level="INFO" doc:name="Logger" doc:id="d12e2aa6-dc6e-4e46-b022-d76268f11195" message="#[vars.contacts]"/>
 		<ee:transform doc:name="Transform Message" doc:id="989727a9-27cb-412d-8587-02086f57e0db">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-[vars.contacts]]]></ee:set-payload>
+vars.contacts]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
