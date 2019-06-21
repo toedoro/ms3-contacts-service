@@ -18,33 +18,33 @@ payload]]></ee:set-payload>
 		</ee:transform>
 		<set-variable value="#[[]]" doc:name="Set Contacts" doc:id="0d6f7ab5-5994-4e6d-8f96-fd3202f953f1" variableName="contacts"/>
 		<foreach doc:name="For Each" doc:id="631a40f1-1108-45cb-aca2-6366c0d5632f" collection="payload">
+			<set-variable value="#[payload]" doc:name="Set Variable" doc:id="69978d9d-b1b5-4bce-ab1c-ebe1c6000c0d" variableName="identification"/>
 			<flow-ref doc:name="Get Addresses And Communications From Contact" doc:id="0badac03-c2c0-41d2-a412-9dc44bb3bf84" name="getAddressessAndCommunicationsFromContact"/>
 			<ee:transform doc:name="Transform Message" doc:id="80493c2f-8444-4379-ae1f-9ffd7ebc6c58" >
 				<ee:message >
-				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="contacts" ><![CDATA[%dw 2.0
+					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"identification": payload,
+	"identification": vars.identification,
 	"address": vars.addresses,
 	"communications": vars.communications
-}]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<ee:transform doc:name="Transform Message" doc:id="6dd0ac72-3285-4075-bda2-88656f96df9d">
-				<ee:message>
+}]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
-					<ee:set-variable variableName="contacts" ><![CDATA[%dw 2.0
-output application/json
----
-vars.contacts + payload]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+			<set-variable value="#[payload]" doc:name="Set Contacts" doc:id="9cb5b568-834c-493c-8759-2d29dd36c5fd" variableName="contacts"/>
 		</foreach>
 		<logger level="INFO" doc:name="Logger" doc:id="d12e2aa6-dc6e-4e46-b022-d76268f11195" message="#[vars.contacts]"/>
+		<ee:transform doc:name="Transform Message" doc:id="989727a9-27cb-412d-8587-02086f57e0db">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[vars.contacts]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 	<sub-flow name="getAddressessAndCommunicationsFromContact" doc:id="ef5ff6fd-1e43-46f8-a775-3a5f77a618ca" >
 		<set-variable value="#[payload.id]" doc:name="Set Contact Id" doc:id="55164f96-0f64-4659-9a48-21351fbd3aaa" variableName="contactId"/>
