@@ -16,7 +16,49 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<set-variable value="#[[]]" doc:name="Set Contacts" doc:id="0d6f7ab5-5994-4e6d-8f96-fd3202f953f1" variableName="contacts"/>
+		<foreach doc:name="For Each" doc:id="631a40f1-1108-45cb-aca2-6366c0d5632f" collection="payload">
+			<flow-ref doc:name="Get Addresses And Communications From Contact" doc:id="0badac03-c2c0-41d2-a412-9dc44bb3bf84" name="getAddressessAndCommunicationsFromContact"/>
+			<ee:transform doc:name="Transform Message" doc:id="80493c2f-8444-4379-ae1f-9ffd7ebc6c58" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="contacts" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"identification": payload,
+	"address": vars.addresses,
+	"communications": vars.communications
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<ee:transform doc:name="Transform Message" doc:id="6dd0ac72-3285-4075-bda2-88656f96df9d">
+				<ee:message>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="contacts" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.contacts + payload]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		<logger level="INFO" doc:name="Logger" doc:id="d12e2aa6-dc6e-4e46-b022-d76268f11195" message="#[vars.contacts]"/>
 	</flow>
+	<sub-flow name="getAddressessAndCommunicationsFromContact" doc:id="ef5ff6fd-1e43-46f8-a775-3a5f77a618ca" >
+		<set-variable value="#[payload.id]" doc:name="Set Contact Id" doc:id="55164f96-0f64-4659-9a48-21351fbd3aaa" variableName="contactId"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="96a4ac68-c2b7-4395-a29e-70877acbd32f" >
+			<route >
+				<flow-ref doc:name="Get Addresses" doc:id="3701110e-7ca6-4f1c-a946-6e6c25ecd9dd" name="getSubAddressesFromContact"/>
+				<set-variable value="#[payload]" doc:name="Set Addresses" doc:id="7850b52e-519f-4c66-ae0b-e246295f5359" variableName="addresses"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Get Communications" doc:id="cfc3c6a9-b2fa-4dc6-8212-d654d0cdc439" name="getSubCommunicationsFromContact"/>
+				<set-variable value="#[payload]" doc:name="Set Communications" doc:id="7f5a8060-079f-420f-9b95-80c3145d1974" variableName="communications"/>
+			</route>
+		</scatter-gather>
+	</sub-flow>
 	<flow name="getAllContacts" doc:id="568322bf-fd28-4e2c-96d1-5fce0a30349d" >
 		<db:select doc:id="add642a4-385c-4c44-9fba-12fdf40a4256" config-ref="Database_Config" doc:name="Get Contacts">
 			<db:sql>SELECT * FROM identification</db:sql>

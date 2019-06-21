@@ -10,20 +10,23 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	
 	<flow name="getAddressesFromContact" doc:id="c64dd4e6-611d-421b-b0e9-809507ec8141" >
 		<flow-ref doc:name="Set Contact Id" doc:id="20e3b32a-c916-46b1-84ff-fda501667764" name="setContactId"/>
+		<flow-ref doc:name="Get Addresses From Contact" doc:id="6366ba7e-20cd-4952-9be3-8ba9b02233fc" name="getSubAddressesFromContact"/>
+	</flow>
+	<sub-flow name="getSubAddressesFromContact" doc:id="6ca6c3b4-b0d6-48ed-b147-c9acd842b350" >
 		<db:select doc:name="Get Addresses From Contact" doc:id="90021977-db56-418b-ae7d-0b72e7f9e9e1" config-ref="Database_Config">
-			<db:sql >SELECT * FROM address
+			<db:sql>SELECT * FROM address
 WHERE identification_id = :identificationId</db:sql>
-			<db:input-parameters ><![CDATA[#[{'identificationId': vars.contactId}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{'identificationId': vars.contactId}]]]></db:input-parameters>
 		</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="54238408-ecd3-4c3e-9f12-75de05bf16fd" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message" doc:id="54238408-ecd3-4c3e-9f12-75de05bf16fd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-	</flow>
+	</sub-flow>
 	<flow name="postAddressFromContact" doc:id="5b98dcd1-a5b6-4be9-ac50-79281b6f4799" >
 		<flow-ref doc:name="Set Contact Id" doc:id="8a9f94f8-d957-45d1-a350-7b3a9e84e153" name="setContactId"/>
 		<db:insert doc:name="Insert Address From Contact" doc:id="6ebe1e6b-7d7b-4262-9176-adf1091773bd" config-ref="Database_Config">

@@ -7,20 +7,23 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="getCommunicationsFromContract" doc:id="5d07c37c-24cb-4d04-bdda-907efdf1def0" >
 		<flow-ref doc:name="Set Contact Id" doc:id="a816f574-8f5c-4002-abb6-50a9ebfb80a7" name="setContactId"/>
+		<flow-ref doc:name="Get Communications From Contact" doc:id="34b29cf4-4d37-4ba1-b075-cb0cde8dbc50" name="getSubCommunicationsFromContact"/>
+	</flow>
+	<sub-flow name="getSubCommunicationsFromContact" doc:id="01b34ce1-f709-4e54-9f08-87405cedbbe6" >
 		<db:select doc:name="Get Communications From Contact" doc:id="06b0c063-5e4f-4edb-8c3a-0841fa94270d" config-ref="Database_Config">
-			<db:sql >SELECT * FROM communication
+			<db:sql>SELECT * FROM communication
 WHERE identification_id = :identificationId</db:sql>
-			<db:input-parameters ><![CDATA[#[{'identificationId': vars.contactId}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{'identificationId': vars.contactId}]]]></db:input-parameters>
 		</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="913045af-00ea-4c56-9353-6e190b0c3205" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message" doc:id="913045af-00ea-4c56-9353-6e190b0c3205">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-	</flow>
+	</sub-flow>
 	<flow name="postCommunicationFromContact" doc:id="71c2d2ae-ad0a-4e7c-9082-15382071de51" >
 		<flow-ref doc:name="Set Contact Id" doc:id="22f7217c-9ef8-471e-8e53-a60e9e5ee36d" name="setContactId"/>
 		<db:insert doc:name="Insert Communicatio from Contact" doc:id="74346229-7e35-435c-8641-5d5537f927b9" config-ref="Database_Config">
