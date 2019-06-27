@@ -85,7 +85,14 @@ vars.contacts]]></ee:set-payload>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.id,
+	firstName: payload01.firstName default "",
+	lastName: payload01.lastName default "",
+	dob: payload01.dob default "",
+	gender: payload01.gender default "",
+	title: payload01.title default ""
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
@@ -123,7 +130,14 @@ WHERE id = :id</db:sql>
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.id,
+	firstName: payload01.firstName default "",
+	lastName: payload01.lastName default "",
+	dob: payload01.dob default "",
+	gender: payload01.gender default "",
+	title: payload01.title default ""
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="a48e7d9c-2c1c-40b5-9f0a-6a639262ca70" message="#[payload]"/>
