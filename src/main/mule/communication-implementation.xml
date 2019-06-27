@@ -20,7 +20,13 @@ WHERE identification_id = :identificationId</db:sql>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.id,
+	"type": payload01."type" default "",
+	value: payload01.value default "",
+	prefered: payload01.preffered default "",
+	identification_id: payload01.identification_id
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</sub-flow>
@@ -61,7 +67,13 @@ WHERE id = :id
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.id,
+	"type": payload01."type" default "",
+	value: payload01.value default "",
+	prefered: payload01.preffered default "",
+	identification_id: payload01.identification_id
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>

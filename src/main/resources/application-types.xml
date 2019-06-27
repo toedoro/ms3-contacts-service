@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="identifications" format="json">
+      <types:shape format="weave" example="api/examples/identificationsExample.json"><![CDATA[%dw 2.0
+
+type identifications = Array<{|  id: Number {"typeId": "int"},   firstName: String,   lastName: String,   dob: String,   gender: String,   title: String|}> {"example": "[{\"id\":1,\"firstName\":\"John\",\"lastName\":\"Lennon\",\"dob\":\"06\/21\/1980\",\"gender\":\"M\",\"title\":\"Manager\"},{\"id\":2,\"firstName\":\"Kurt\",\"lastName\":\"Cobain\",\"dob\":\"06\/21\/1980\",\"gender\":\"M\",\"title\":\"Product Manager\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="communications" format="json">
+      <types:shape format="weave" example="api/examples/communicationsExample.json"><![CDATA[%dw 2.0
+
+type communications = Array<{|  id: Number {"typeId": "int"},   "type": String,   value: String,   prefered: String,   identification_id: Number {"typeId": "int"}|}> {"example": "[{\"id\":1,\"type\":\"email\",\"value\":\"bef@sample.co\",\"prefered\":\"true\",\"identification_id\":1}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="addresses" format="json">
+      <types:shape format="weave" example="api/examples/addressesExample.json"><![CDATA[%dw 2.0
+
+type addresses = Array<{|  id: Number {"typeId": "int"},   "type": String,   number: Number {"typeId": "int"},   street: String,   unit: String,   city: String,   state: String,   zipcode: Number {"typeId": "int"},   identification_id: Number {"typeId": "int"}|}> {"example": "[{\"id\":1,\"type\":\"home\",\"number\":1234,\"street\":\"liverpool\",\"unit\":\"12-c\",\"city\":\"texas\",\"state\":\"houston\",\"zipcode\":6045,\"identification_id\":1}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="contacts" format="json">
+      <types:shape format="weave" example="api/examples/contacts.json"><![CDATA[%dw 2.0
+
+type contacts = Array<{|  identification: {|    id: Number {"typeId": "int"},     "type": String,     value: String,     prefered: String,     identification_id: Number {"typeId": "int"}  |},   address: {|    id: Number {"typeId": "int"},     "type": String,     number: Number {"typeId": "int"},     street: String,     unit: String,     city: String,     state: String,     zipcode: Number {"typeId": "int"},     identification_id: Number {"typeId": "int"}  |},   communications: {|    id: Number {"typeId": "int"},     "type": String,     value: String,     prefered: String,     identification_id: Number {"typeId": "int"}  |}|}> {"example": "[{\"identification\":{\"id\":1,\"type\":\"email\",\"value\":\"bef@sample.co\",\"prefered\":\"true\",\"identification_id\":1},\"address\":{\"id\":1,\"type\":\"home\",\"number\":1234,\"street\":\"liverpool\",\"unit\":\"12-c\",\"city\":\"texas\",\"state\":\"houston\",\"zipcode\":6045,\"identification_id\":1},\"communications\":{\"id\":1,\"type\":\"email\",\"value\":\"bef@sample.co\",\"prefered\":\"true\",\"identification_id\":1}}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#2b87744c-913a-4076-8dfc-15a8e0b2df79">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="identifications"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#b7b0f3f4-19ef-409d-b009-f23a9e3cd4fc">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="identifications"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#913045af-00ea-4c56-9353-6e190b0c3205">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="communications"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#50bc4d5e-0942-4232-8ddd-a172ae50746f">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="communications"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#54238408-ecd3-4c3e-9f12-75de05bf16fd">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="addresses"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#413a19a7-52c3-4b71-a0dc-3c06affa4e0d">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="addresses"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#80493c2f-8444-4379-ae1f-9ffd7ebc6c58"/>
+</types:mule>

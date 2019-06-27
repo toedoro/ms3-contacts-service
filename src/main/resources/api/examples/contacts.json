@@ -1,0 +1,28 @@
+[
+ {
+	"identification": {
+		"id": 1,
+	  	"firstName": "Bob",
+	  	"lastName": "Frederick",
+	  	"dob": "06/21/1980",
+	  	"gender": "M",
+	  	"title": "Manager"
+	}, "address": {
+		"id": 1,
+	    "type": "home",
+	    "number": 1234,
+	    "street": "liverpool",
+	    "unit": "12-c",
+	    "city": "texas",
+	    "state": "houston",
+	    "zipcode": 6045,
+	    "identification_id": 1
+	}, "communications": {
+		"id": 1,
+		"type": "email",
+		"value": "bef@sample.co", 
+		"prefered": "true",
+		"identification_id": 1
+	}
+ }
+]
