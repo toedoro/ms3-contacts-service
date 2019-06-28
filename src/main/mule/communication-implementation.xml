@@ -52,6 +52,20 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="df2997ad-31bb-47ca-be7e-1dc183a1dcee" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="b8dba6da-c36b-44c7-9fc1-4731a8061b25" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error saving data from the Communication"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	<flow name="getCommunicationFromContact" doc:id="cc8ae2ea-8d3f-4c21-aa4d-329dbaa5ec55" >
 		<flow-ref doc:name="Set Contact Id" doc:id="885f4c95-55f6-4df9-8ad4-c6cef19db694" name="setContactId"/>
@@ -101,6 +115,20 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ffad3e6c-b203-4f95-9ed8-b4a29b48cac9" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="ebb73b06-a721-433a-aa55-a4df7ead67c2" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error updating data from the Communication!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	<flow name="deleteCommunicationFromContact" doc:id="71856b59-4e4b-4fc8-bd54-cee295eb6687" >
 		<flow-ref doc:name="Set Contact Id" doc:id="1e19359b-4e0b-4977-8519-a963c6c860c9" name="setContactId"/>
@@ -121,5 +149,19 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="21c9006b-4f09-486b-b526-e4eec235ae03" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="afccce6d-66bc-4a6e-b1db-62ed3ced90fe" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error on communication deletion!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 </mule>
