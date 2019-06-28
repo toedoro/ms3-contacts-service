@@ -24,12 +24,12 @@ types:
         body: 
           application/json:
             example:
-              message: Identification successfully added!
+              message: Contacts successfully added!
       400:
         body:
           application/json:
             example: 
-              message: Error saving data from the Contacts
+              message: Error saving data from the Contacts!
 
   /{contactId}:
     get:
@@ -55,7 +55,7 @@ types:
           body:
             application/json:
               example: 
-                message: Error updating data from the Contacts
+                message: Error updating data from the Contacts!
       
     delete:
       responses: 
@@ -89,7 +89,7 @@ types:
             body:
               application/json:
                 example: 
-                  message: Error saving data from the Address
+                  message: Error saving data from the Address!
 
 
       /{addressId}:

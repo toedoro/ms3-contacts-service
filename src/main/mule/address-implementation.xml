@@ -61,6 +61,20 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="eaafc443-3fb8-4f54-ab64-97dac2048abe" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="b5113979-a0a0-4c96-b4ef-50936a1ae010" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error saving data from the Address"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	<flow name="getAddressFromContact" doc:id="a3ed20e0-9f9e-4151-9fc5-f4cad76ccdb0" >
 		<flow-ref doc:name="Set Contact Id" doc:id="7276449e-5fe7-4a5f-9a52-20bebe95fa75" name="setContactId"/>
@@ -116,6 +130,20 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b9a916e5-1f3c-474c-8f65-3acfab83b406" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="e344710a-fb04-434a-aa04-017565e8b335" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error updating data from the Address!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	<flow name="deleteAddressFromContract" doc:id="5e73f2e9-ab1f-4185-bf92-dde576acc10f" >
 		<flow-ref doc:name="Set Contact Id" doc:id="63b14218-e078-432f-9d1f-5011044c5735" name="setContactId"/>
@@ -136,6 +164,20 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0ff46ba2-8be0-4cf5-87d7-01ae7bad82ce" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="b65ae09e-2145-4437-bbcf-e65979e6b19f" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error on address deletion!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	
 </mule>
