@@ -10,7 +10,11 @@
 	<munit:config name="identification-implementation-test-suite.xml" />
 	<munit:test name="identification-implementation-test-patchContactsByIdTest" description="MUnit Test" doc:id="e51ca5f0-1060-4d97-ab7a-19e840b297a5" >
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when" doc:id="4823327a-e10c-448f-b7ef-620b29f877fb" processor="db:update"/>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4823327a-e10c-448f-b7ef-620b29f877fb" processor="db:update">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
 			<flow-ref doc:name="Flow Reference" doc:id="eec73101-1d5e-4942-86d1-64b0360f74a1" name="patchContactsById"/>
@@ -23,7 +27,6 @@
 	<munit:test name="identification-implementation-test-suite-postContactsTest" description="Test" doc:id="d0ba731f-28c6-43bc-8b79-bf92643ae96e" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when" doc:id="7ae92a18-4575-42bc-8fa2-6306da685cf3" processor="db:insert">
-				<munit-tools:with-attributes />
 				<munit-tools:then-return >
 					<munit-tools:payload value="#[payload]"/>
 				</munit-tools:then-return>
@@ -39,7 +42,11 @@
 	</munit:test>
 	<munit:test name="identification-implementation-test-deleteContactsByIdTest" description="MUnit Test" doc:id="d9fc6f53-bca7-44b7-ab05-e0ae687654ce" >
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when" doc:id="97f386dc-3963-403f-8694-53725a2d26c1" processor="db:delete"/>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="97f386dc-3963-403f-8694-53725a2d26c1" processor="db:delete">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
 			<flow-ref doc:name="Flow Reference" doc:id="f274a7d4-939b-4434-980a-deb8168bced5" name="deleteContactById"/>

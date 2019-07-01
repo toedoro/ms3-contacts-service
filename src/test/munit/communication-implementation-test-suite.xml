@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="communication-implementation-suite.xml" />
+	<munit:test name="communication-implementation-suite-postCommunicationFromContactTest" description="Test" doc:id="609ccd30-c074-4a5a-8434-881b388d74c9" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4e359fa2-80b2-44d0-bdf1-a9f03ea6cb7c" processor="db:insert">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to postCommunicationFromContact" doc:id="e0e8bdc8-632a-4349-a0ca-87d2038d4fce" name="postCommunicationFromContact"/>
+		</munit:execution>
+		<munit:validation >
+			<set-variable value="#[message: 'Communication successfully added!']" doc:name="Set Variable" doc:id="e6385f2c-930c-4419-b08c-482f5e5ed446" variableName="message"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="2f48c1b8-43d6-40ad-9443-6c9bdd68de3f" expression="#[payload]" is="#[MunitTools::equalTo(vars.message)]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="communication-implementation-suite-patchCommunicationFromContactTest" description="Test" doc:id="b85fba0e-7903-4153-9a4c-b80422197aeb" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="deab1a82-c728-46fb-9ad5-282c0630c21a" processor="db:update">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to patchCommunicationFromContact" doc:id="84d181be-6bf4-4bd2-b70b-900693ad4fae" name="patchCommunicationFromContact"/>
+		</munit:execution>
+		<munit:validation >
+			<set-variable value="#[message: 'Communication successfully updated!']" doc:name="Set Variable" doc:id="dda6e2c8-9351-496d-a8bd-8882effa49c6" variableName="message"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="7ff5b689-ffb9-42c4-9ba6-78c18863e795" expression="#[payload]" is="#[MunitTools::equalTo(vars.message)]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="communication-implementation-suite-deleteCommunicationFromContactTest" description="Test" doc:id="320b18ab-2609-4a0d-8e11-671fb0d0b5bb" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="41aae283-9e06-4a79-89b4-e0c4821e65ed" processor="db:delete">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to deleteCommunicationFromContact" doc:id="53ad359d-75ac-4c08-bed2-e63751fff32d" name="deleteCommunicationFromContact"/>
+		</munit:execution>
+		<munit:validation >
+			<set-variable value="#[message: 'Communication successfully deleted!']" doc:name="Set Variable" doc:id="d2026ce6-be4e-4d71-bf65-07b45802ae4b" variableName="message"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ab877d2a-be94-4e8b-897e-aae7917a3a3c" expression="#[payload]" is="#[MunitTools::equalTo(vars.message)]"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>
