@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="identification-implementation-test-suite.xml" />
+	<munit:test name="identification-implementation-test-patchContactsByIdTest" description="MUnit Test" doc:id="e51ca5f0-1060-4d97-ab7a-19e840b297a5" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4823327a-e10c-448f-b7ef-620b29f877fb" processor="db:update">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="eec73101-1d5e-4942-86d1-64b0360f74a1" name="patchContactsById"/>
+		</munit:execution>
+		<munit:validation >
+			<set-variable value="#[message: 'Contact successfully updated!']" doc:name="Set Variable" doc:id="b6ba09d4-b804-41d6-b8be-1df8759e417e" variableName="message"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="70457692-77cb-463c-bf93-f49c633c980c" expression="#[payload]" is="#[MunitTools::equalTo(vars.message)]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="identification-implementation-test-suite-postContactsTest" description="Test" doc:id="d0ba731f-28c6-43bc-8b79-bf92643ae96e" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="7ae92a18-4575-42bc-8fa2-6306da685cf3" processor="db:insert">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]"/>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to postContacts" doc:id="3801d498-efaa-49c7-b7aa-d37e57595028" name="postContacts"/>
+		</munit:execution>
+		<munit:validation >
+			<set-variable value="#[message: 'Contact successfully added!']" doc:name="Set Variable" doc:id="1103d1fb-a88d-4f5a-821e-e4998e8d01d3" variableName="message"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="c18d7976-4a11-451a-bbcc-084a3e7a123f" expression="#[payload]" is="#[MunitTools::equalTo(vars.message)]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="identification-implementation-test-deleteContactsByIdTest" description="MUnit Test" doc:id="d9fc6f53-bca7-44b7-ab05-e0ae687654ce" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="97f386dc-3963-403f-8694-53725a2d26c1" processor="db:delete">
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="f274a7d4-939b-4434-980a-deb8168bced5" name="deleteContactById"/>
+		</munit:execution>
+		<munit:validation >
+			<set-variable value="#[message: 'Contact successfully deleted!']" doc:name="Set Variable" doc:id="e6c62d71-21da-4907-a0ae-1cff26a5d23b" variableName="message"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="de91067f-9b96-435b-ba2a-d7273db5d868" expression="#[payload]" is="#[MunitTools::equalTo(vars.message)]"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>
