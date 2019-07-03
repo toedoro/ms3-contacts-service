@@ -6,11 +6,11 @@
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
-	<http:listener-config name="HTTP_Listener_config"
+	<!-- <http:listener-config name="HTTP_Listener_config"
 		doc:name="HTTP Listener config" doc:id="9436209d-eb6f-47cc-9b99-b2ff2c5a0f8d">
 		<http:listener-connection host="0.0.0.0"
 			port="8081" />
-	</http:listener-config>
+	</http:listener-config> -->
 	<db:config name="Database_Config" doc:name="Database Config"
 		doc:id="11a45fc6-93c9-4336-8b16-6205b081d5ea">
 		<db:my-sql-connection host="${db.host}" port="${db.port}"
