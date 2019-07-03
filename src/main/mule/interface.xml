@@ -3,7 +3,7 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <apikit:config name="contacts-api-config" raml="contacts-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="contacts-api-main">
-        <http:listener config-ref="HTTP_Listener_config" path="/api/*">
+        <http:listener config-ref="httpsListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">

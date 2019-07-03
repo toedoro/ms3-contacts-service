@@ -6,18 +6,11 @@
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
-	<http:listener-config name="HTTP_Listener_config"
+	<!-- <http:listener-config name="HTTP_Listener_config"
 		doc:name="HTTP Listener config" doc:id="9436209d-eb6f-47cc-9b99-b2ff2c5a0f8d">
 		<http:listener-connection host="0.0.0.0"
 			port="8081" />
-	</http:listener-config>
-	<db:config name="Database_Config" doc:name="Database Config"
-		doc:id="11a45fc6-93c9-4336-8b16-6205b081d5ea">
-		<db:my-sql-connection host="${db.host}" port="${db.port}"
-			user="${db.username}" password="${db.password}" database="${db.databse}"/>
-	</db:config>
-	<configuration-properties doc:name="Configuration properties"
-		doc:id="6a9f3583-7832-4aeb-b93d-cb18c01573b6" file="contacts-config-dev.yaml" />
+	</http:listener-config> -->
 
 	<sub-flow name="setContactId" doc:id="11b23339-2e2b-4ba9-b9f4-6b771c8ea28d">
 		<set-variable value="#[attributes.uriParams.contactId]"
